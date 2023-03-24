@@ -1,0 +1,44 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      funkySetFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+expressions
+(
+  theta
+   {
+     field W;
+     dimensions [0 0 -1 0 0 0 0];
+     
+     /*constants{ 
+     }  */
+
+     
+     variables
+     (
+        "xc1 = 3*pi()/4"
+        "yc1 = pi()"
+        "xc2 = 5*pi()/4"
+        "yc2 = pi()"
+        "x = pos().x()"
+        "y = pos().y()"
+     );
+     expression 
+     #{
+        exp(-pi()*(sqr(x - xc1) + sqr(y - yc1))) + exp(-pi()*(sqr(x - xc2) + sqr(y - yc2)))
+     #};
+   }
+);
+// ************************************************************************* //

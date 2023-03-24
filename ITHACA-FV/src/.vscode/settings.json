@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "ReducedUnsteadyNSWPsi.C": "cpp",
+        "unsteadyNSWPsi.C": "cpp",
+        "steadyNSWPsi.C": "cpp",
+        "ReducedSteadyNSWPsi.C": "cpp",
+        "ReducedUnsteadyNSTurbIntrusive.C": "cpp",
+        "ReducedUnsteadyNS.C": "cpp"
+    }
+}

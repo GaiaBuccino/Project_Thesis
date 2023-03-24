@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "04unsteadyNS.C": "cpp",
+        "vortexMergerWPsi_ITHACA.C": "cpp",
+        "ReducedUnsteadyNSWPsi.C": "cpp",
+        "ReducedUnsteadyNS.C": "cpp",
+        "unsteadyNSWPsi.C": "cpp"
+    }
+}

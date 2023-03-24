@@ -1,0 +1,23 @@
+#!/bin/sh
+cd "${0%/*}" || exit                            # Run from this directory
+
+for dir0 in \
+    src applications \
+    tutorials/CFD \
+    tutorials/UQ \
+    tutorials/NN \
+    tutorials/inverseHeatTransfer \
+    unitTests \
+;
+do
+    for d in "$dir0"/*
+    do
+        if [ -f "$d/Make/files" ]
+        then
+            wclean "$d"
+        fi
+    done
+done
+
+
+#------------------------------------------------------------------------------

@@ -1,0 +1,195 @@
+#!/bin/bash
+cd "${0%/*}" || exit                            # Run from this directory
+
+help_flag=''
+tutorial_flag=''
+torch_flag=''
+muq_flag=''
+applications_flag=''
+unit_tests_flag=''
+
+has_wmake="$(command -v wmake)"
+
+# ------------
+# Trap recursion flag (eg, if called from wmake -all)
+case "$1" in
+(-no-recurs* | -fromWmake)
+    shift
+    ;;
+esac
+# ------------
+
+while getopts 'htmqj:asu' flag; do
+  case "${flag}" in
+    h) help_flag=true ;;
+    t) tutorial_flag=true ;;
+    m) torch_flag=true ;;
+    q) muq_flag=true ;;
+    a) applications_flag=true ;;
+    u) unit_tests_flag=true ;;
+    j)
+        export WM_NCOMPPROCS="$OPTARG"
+        echo "Compiling enabled on $WM_NCOMPPROCS cores" 1>&2
+        ;;
+    s) export WM_QUIET=true ;;
+
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+
+if [ -n "$help_flag" ]
+then
+    echo "==========================="
+    echo "Help for ITHACA-FV Allwmake"
+    echo "==========================="
+    echo
+    echo "options:"
+    echo "  -h     show brief help"
+    echo "  -t     enable tutorials compilation (default: off)"
+    echo "  -m     enable TORCH extension (default: off)"
+    echo "  -q     enable MUQ2 extension (default: off)"
+    echo "  -s     wmake silent mode"
+    echo "  -j N   enable parallel compilation with specified number of cores"
+    echo "  -a     enable application compilation (default: off)"
+    echo "  -u     enable unitTests compilation (default: off)"
+    echo
+    if [ -n "$has_wmake" ]
+    then
+        echo "============================================"
+        echo "Help for the standard wmake OpenFOAM utility"
+        echo "============================================"
+        wmake -h
+    else
+        echo "No wmake - is OPENFOAM enviroment active?"
+    fi
+
+    exit 0  # Clean exit
+fi
+
+[ -n "$has_wmake" ] || {
+    echo "Error: no wmake - is OPENFOAM enviroment active?"
+    exit 2
+}
+
+#------------------------------------------------------------------------------
+
+if [ ! -d "$LIB_ITHACA" ]
+then
+    echo "ITHACA environment not set. Attempting that now..."
+    . "$PWD"/etc/bashrc || false
+fi
+
+[ -d "$LIB_ITHACA" ] || {
+    echo "Error: no ITHACA environment"
+    exit 2
+}
+
+
+#------------------------------------------------------------------------------
+#
+# src
+#
+dir0=src
+echo "[$dir0]"
+for d in "$dir0"/*
+do
+    case "$d" in
+    (*/ITHACA_TORCH)
+        [ -n "$torch_flag" ] || continue
+        ;;
+    (*/ITHACA_MUQ)
+        [ -n "$muq_flag" ] || continue
+        ;;
+    esac
+
+    [ -f "$d/Make/files" ] || continue
+
+    wmake "$d"
+    if [ $? -ne 0 ]
+    then
+        echo "Compile error: $d"
+        exit 1
+    fi
+done
+
+
+#
+# applications
+#
+dir0=applications
+if [ "$applications_flag" = true ]
+then
+    echo "[$dir0]"
+    for d in "$dir0"/*
+    do
+        [ -f "$d/Make/files" ] || continue
+        wmake "$d"
+        if [ $? -ne 0 ]
+        then
+            echo "Compile error: $d"
+            exit 1
+        fi
+    done
+else
+    echo "[skip $dir0]"
+fi
+
+
+#
+# tutorials
+#
+dir0=tutorials
+if [ "$tutorial_flag" = true ]
+then
+    echo "[$dir0]"
+    subdirs="CFD inverseHeatTransfer"
+    [ -n "$muq_flag" ] && subdirs="$subdirs UQ"
+    [ -n "$torch_flag" ] && subdirs="$subdirs NN"
+
+    for subdir in $subdirs
+    do
+        for d in "$dir0/$subdir"/*
+        do
+            [ -f "$d/Make/files" ] || continue
+            wmake "$d"
+            if [ $? -ne 0 ]
+            then
+                echo "Compile error: $d"
+                exit 1
+            fi
+        done
+    done
+else
+    echo "[skip $dir0]"
+fi
+
+
+#
+# unitTests
+#
+dir0=unitTests
+if [ "$unit_tests_flag" = true ]
+then
+    echo "[$dir0]"
+    for d in "$dir0"/*
+    do
+        case "$d" in
+        (*/libTorch)
+            [ -n "$torch_flag" ] || continue
+            ;;
+        esac
+
+        [ -f "$d/Make/files" ] || continue
+        wmake "$d"
+        if [ $? -ne 0 ]
+        then
+            echo "Compile error: $d"
+            exit 1
+        fi
+    done
+else
+    echo "[skip $dir0]"
+fi
+
+#------------------------------------------------------------------------------

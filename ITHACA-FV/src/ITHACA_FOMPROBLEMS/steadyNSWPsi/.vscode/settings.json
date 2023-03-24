@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "steadyNSWPsi.C": "cpp",
+        "steadyNS.C": "cpp"
+    }
+}

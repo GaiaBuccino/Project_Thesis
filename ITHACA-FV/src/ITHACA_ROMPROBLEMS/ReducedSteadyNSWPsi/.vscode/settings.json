@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "ReducedSteadyNS.C": "cpp",
+        "ReducedSteadyNSWPsi.C": "cpp",
+        "ReducedUnsteadyNS.C": "cpp"
+    }
+}

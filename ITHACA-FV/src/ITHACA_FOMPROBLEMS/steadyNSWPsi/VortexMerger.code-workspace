@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"path": "../../../tutorials/CFD/vortexMergerWPsi_ITHACA"
+		},
+		{
+			"path": "../unsteadyNSWPsi"
+		},
+		{
+			"path": "../unsteadyNS"
+		},
+		{
+			"path": "../../ITHACA_ROMPROBLEMS/ReducedSteadyNSWPsi"
+		},
+		{
+			"path": "../../ITHACA_ROMPROBLEMS/ReducedUnsteadyNSWPsi"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"04unsteadyNS.C": "cpp",
+			"vortexMergerWPsi_ITHACA.C": "cpp",
+			"unsteadyNSWPsi.C": "cpp",
+			"ReducedSteadyNSWPsi.C": "cpp",
+			"steadyNSWPsi.C": "cpp",
+			"UtilitiesTest.C": "cpp",
+			"steadyNS.C": "cpp"
+		}
+	}
+}
