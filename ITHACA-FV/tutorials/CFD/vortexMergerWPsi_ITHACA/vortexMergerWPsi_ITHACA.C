@@ -89,12 +89,12 @@ int main(int argc, char* argv[])
     // Read parameters from ITHACAdict file
     ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
-    int NmodesWout = para->ITHACAdict->lookupOrDefault<int>("NmodesWout", 15);
-    int NmodesPsi_zout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zout", 15);
-    //int NmodesSUPout = para->ITHACAdict->lookupOrDefault<int>("NmodesSUPout", 15);
-    int NmodesWproj = para->ITHACAdict->lookupOrDefault<int>("NmodesWproj", 10);
-    int NmodesPsi_zproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zproj", 10);
-    //int NmodesSUPproj = para->ITHACAdict->lookupOrDefault<int>("NmodesSUPproj", 10);
+    int NmodesWout = para->ITHACAdict->lookupOrDefault<int>("NmodesWout", 2);
+    int NmodesPsi_zout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zout", 2);
+    int NmodesPsiout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsiout", 2);
+    int NmodesWproj = para->ITHACAdict->lookupOrDefault<int>("NmodesWproj", 2);
+    int NmodesPsi_zproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zproj", 2);
+    int NmodesPsiproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsiproj", 2);
     /// Set the number of parameters
     example.Pnumber = 1;
     /// Set samples
@@ -135,11 +135,11 @@ int main(int argc, char* argv[])
     ITHACAPOD::getModes(example.Psi_zfield, example.Psi_zmodes, example._Psi_z().name(),
                         example.podex, 0, 0,
                         NmodesPsi_zout);
-    /* ITHACAPOD::getModes(example.supfield, example.supmodes, example._U().name(),
+    ITHACAPOD::getModes(example.Psifield, example.Psimodes, example._Psi().name(),
                         example.podex,
-                        example.supex, 1, NmodesSUPout); */
+                        0, 0, NmodesPsiout);  
     //example.projectSUP("./Matrices", NmodesWproj, NmodesPsi_zproj);
-    example.projectSUP("./Matrices", 10, 10);
+    example.projectSUP("./Matrices", 2, 2);
     reducedUnsteadyNSWPsi reduced(example);
     // Set values of the reduced stuff
     reduced.nu = 0.00125;

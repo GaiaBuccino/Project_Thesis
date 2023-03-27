@@ -113,7 +113,10 @@ void steadyNSWPsi::projectSUP(fileName folder, label NW, label NPsi_z)
     NPsi_zmodes = NPsi_z;
     NPsimodes = NPsi_z;
 
-     if (ITHACAutilities::check_folder("./ITHACAoutput/Matrices/"))
+    Info << "\nIN PROJECTSUP NWmodes = "<< NWmodes << endl;
+
+
+    if (ITHACAutilities::check_folder("./ITHACAoutput/Matrices/"))
     {
 
         word AWPsi_str = "AWPsi_" + name(NWmodes);
@@ -200,17 +203,20 @@ void steadyNSWPsi::projectSUP(fileName folder, label NW, label NPsi_z)
 
 Eigen::MatrixXd steadyNSWPsi::diffusiveW_term(label NWmodes, label NPsi_zmodes)
 {
+    Info << "\nNWmodes = " << NWmodes << endl;
     label AWPsi_size = NWmodes;
+    Info << "\nsize Wmodes = "<< Wmodes.size() << endl;
     Eigen::MatrixXd AWPsi_matrix;
     AWPsi_matrix.resize(AWPsi_size, AWPsi_size);
 
 
     for (label i = 0; i < AWPsi_size; i++)     //L_U_SUPmodes = modes W
-    {
+    {   Info << "\nsono in diffusive W ciclo esterno" << endl;
         for (label j = 0; j < AWPsi_size; j++)
         {
             AWPsi_matrix(i, j) = fvc::domainIntegrate(Wmodes[i] * fvc::laplacian(
                     dimensionedScalar("1", dimless, 1), Wmodes[j])).value();
+            Info << "\nsono in diffusive W ho fatto AWPSI" << endl;
         }
     }
 
@@ -225,28 +231,32 @@ Eigen::MatrixXd steadyNSWPsi::diffusiveW_term(label NWmodes, label NPsi_zmodes)
 /// @return 
 Eigen::MatrixXd steadyNSWPsi::diffusivePsi_z_term(label NWmodes, label NPsi_zmodes)
 {
-    cout << "sono in diffusive" << endl;
+    Info << "\nsono in diffusive PSI " << endl;
     label BWPsi_size = NPsi_zmodes;
     Eigen::MatrixXd BWPsi_matrix;
     BWPsi_matrix.resize(BWPsi_size, BWPsi_size);
 
-    cout<<"\n Psi_zmodes size =" << Psi_zmodes.size()<<endl;
-    cout<<"\n Psimodes size =" << Psimodes.size()<<endl;
+    Info<<"\n Psi_zmodes size =" << Psi_zmodes.size()<<endl;
+    
 
     for (size_t i = 0; i < Psi_zmodes.size(); i++)
     {
+        Info<<"\n Psi_zmodes[i] size =" << Psi_zmodes[i].size()<<endl;
+
         for (size_t j = 0; j < Psi_zmodes[i].size(); j++)
-        {
+        { 
+            Info << "\ncalcolo Psi field vettoriale"<< endl;
             Psimodes[i][j][2] = Psi_zmodes[i][j];
+            //Psimodes[i][2] = Psi_zmodes[i];
+            Info<<"\n valore test di Psi =" << Psimodes[0][0][2]<<endl;
+
         }
         
     }
+    Info<<"\n Psimodes size =" << Psimodes.size()<<endl;
 
     for (label i = 0; i < BWPsi_size; i++)     //L_U_SUPmodes = modes W
     {
-        //cout << "sono in ciclo for" << endl;
-        
-        //cout << "Psi_zmodes:" << Psi_zmodes[i] << "\n";
         for (label j = 0; j < BWPsi_size; j++)
         {
             BWPsi_matrix(i, j) = fvc::domainIntegrate(Psimodes[i] & fvc::laplacian(
@@ -327,7 +337,7 @@ Eigen::MatrixXd steadyNSWPsi::massPsi_z_term(label NWmodes, label NPsi_zmodes)
     // Project everything
     for (label i = 0; i < MPsi_size; i++)
     {
-        Psimodes[i] = Psi_zmodes[i]*temp[i];
+        //Psimodes[i] = Psi_zmodes[i]*temp[i];
         for (label j = 0; j < MW_size; j++)
         {
             MPsi_matrix(i, j) = fvc::domainIntegrate(Psi_zmodes[i] * 
