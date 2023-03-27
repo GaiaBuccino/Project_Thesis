@@ -20,6 +20,7 @@ EigenSolver eigen;
 // Number of modes to output and to use for projection
 NmodesWout 2;
 NmodesWproj 2;
+//out maggiore di proj per scegliere dopo quanti modi ussare per proiettare
 
 NmodesPsi_zout 2;
 NmodesPsi_zproj 2;

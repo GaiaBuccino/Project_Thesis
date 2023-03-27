@@ -56,7 +56,7 @@ struct newton_steadyNSWPsi: public newton_argument<double>
                         steadyNSWPsi& problem): newton_argument<double>(Nx,
                                     Ny),
             problem(&problem),
-            Nphi_w(problem.NWmodes + problem.liftfield.size() + problem.NSUPmodes),
+            Nphi_w(problem.NWmodes /*+ problem.liftfield.size() + problem.NSUPmodes*/),
             Nphi_psi_z(problem.NPsi_zmodes),
             N_BC(problem.inletIndex.rows())
         {}
@@ -179,7 +179,7 @@ class reducedSteadyNSWPsi: public reducedProblem
         /// with an Eigen::MatrixXd and must have one col and as many rows as the number
         /// of parametrized boundary conditions.
         ///
-        void solveOnline_PPE(Eigen::MatrixXd vel_now);
+        //void solveOnline_PPE(Eigen::MatrixXd vel_now);
 
         /// Method to perform an online solve using a supremizer stabilisation
         /// method

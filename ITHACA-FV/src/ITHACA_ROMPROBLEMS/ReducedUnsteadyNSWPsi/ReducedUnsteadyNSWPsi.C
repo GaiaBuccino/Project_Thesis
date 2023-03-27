@@ -108,11 +108,11 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
     // MomW Term
     Eigen::VectorXd MB = problem->BWPsi_matrix * b_tmp;
     // MassW Term
-    Eigen::VectorXd MMW = problem->MW_matrix * a_dot;
+    Eigen::VectorXd MMW = problem->MW_matrix * a_tmp;
     // MassPsi Term
-    Eigen::VectorXd MMPsi = problem->MPsi_matrix * a_dot;
+    Eigen::VectorXd MMPsi = problem->MPsi_matrix * a_tmp;
     // Pressure Term
-    Eigen::VectorXd M3 = problem->P_matrix * a_tmp;
+    //Eigen::VectorXd M3 = problem->P_matrix * a_tmp;
     // Penalty term
 //    Eigen::MatrixXd penaltyU = Eigen::MatrixXd::Zero(Nphi_u, N_BC);
 
@@ -129,7 +129,7 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
 
     for (int i = 0; i < Nphi_w; i++)
     {
-        cc = a_tmp.transpose() * Eigen::SliceFromTensor(problem->C_tensor, 0,
+        cc = b_tmp.transpose() * Eigen::SliceFromTensor(problem->GWPsi_tensor, 0,
                 i) * a_tmp;
         fvec(i) = - MMW(i) + MA(i) - cc(0, 0);
 
@@ -296,10 +296,13 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     }
  */
     // Create and resize the solution vector
+    Info << "\n Nphi_w ="<< Nphi_w << endl;
+    Info << "\n Nphi_psi_z ="<< Nphi_psi_z << endl;
+
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
     y.head(Nphi_w) = ITHACAutilities::getCoeffs(problem->Wfield[startSnap],
-                     Wmodes);
+        Wmodes);
     y.tail(Nphi_psi_z) = ITHACAutilities::getCoeffs(problem->Psi_zfield[startSnap],
                      Psi_zmodes);
     int nextStore = 0;
@@ -319,13 +322,13 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     newton_object_sup.y_old = y;
     newton_object_sup.yOldOld = newton_object_sup.y_old;
     newton_object_sup.dt = dt;
-    newton_object_sup.BC.resize(N_BC);
-    newton_object_sup.tauU = tauU;
+    //newton_object_sup.BC.resize(N_BC);
+    //newton_object_sup.tauU = tauU;
 
-    for (int j = 0; j < N_BC; j++)
+    /* for (int j = 0; j < N_BC; j++)
     {
         newton_object_sup.BC(j) = vel_now(j, 0);
-    }
+    } */
 
     // Set number of online solutions
     int Ntsteps = static_cast<int>((finalTime - tstart) / dt);
@@ -355,13 +358,13 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
         time = time + dt;
 
         // Set time-dependent BCs
-        if (problem->timedepbcMethod == "yes" )
+        /* if (problem->timedepbcMethod == "yes" )
         {
             for (int j = 0; j < N_BC; j++)
             {
                 newton_object_sup.BC(j) = vel_now(j, counter);
             }
-        }
+        } */
 
         Eigen::VectorXd res(y);
         res.setZero();

@@ -30,8 +30,10 @@ gradSchemes
 
 divSchemes
 {
-    default         none;
-    div(phi,W)      Gauss linear; //linearUpwind grad(U);*/
+    default         Gauss linear;
+    //div(phi,W)      Gauss linear;
+    //div(interpolate(curl(Psi)),W)    Gauss linear;
+    //linearUpwind grad(U);*/
 /*    div((nuEff*dev(T(grad(U))))) Gauss linear;*/
 /*    div((nuEff*dev2(T(grad(U))))) Gauss linear;*/
 /*    div((nuEff*dev2(T(grad(Ua))))) Gauss linear;*/

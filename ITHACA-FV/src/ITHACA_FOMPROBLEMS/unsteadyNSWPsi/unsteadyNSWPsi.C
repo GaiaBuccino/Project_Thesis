@@ -123,7 +123,6 @@ void unsteadyNSWPsi::truthSolve(List<scalar> mu_now, fileName folder)
     //Pfield.append(p.clone());
     Wfield.append(W.clone());
     Psi_zfield.append(Psi_z.clone());
-    //Psi = temp*Psi_z; 
     Psifield.append(Psi.clone());
     counter++;
     nextWrite += writeEvery;
@@ -181,7 +180,7 @@ void unsteadyNSWPsi::truthSolve(List<scalar> mu_now, fileName folder)
              << "  ClockTime = " << runTime.elapsedClockTime() << " s"
              << nl << endl;
 
-        Info<<"il valkore di check runtime e':"<<checkWrite(runTime)<<"\n"<<endl;
+        Info<<"il valore di check runtime e':"<<checkWrite(runTime)<<"\n"<<endl;
         if (checkWrite(runTime))
         {
             Info<< "PRE-EXPORT"<<endl;

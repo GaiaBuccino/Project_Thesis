@@ -82,13 +82,13 @@ int newton_steadyNSWPsi::operator()(const Eigen::VectorXd& x,
     // MomW Term
     Eigen::VectorXd MB = problem->BWPsi_matrix * b_tmp;
     // MassW Term
-    Eigen::VectorXd MMW = problem->MW_matrix * a_dot;
+    Eigen::VectorXd MMW = problem->MW_matrix * a_tmp;
     // MassPsi Term
-    Eigen::VectorXd MMPsi = problem->MPsi_matrix * a_dot;
+    Eigen::VectorXd MMPsi = problem->MPsi_matrix * a_tmp;
     // Pressure Term
-    Eigen::VectorXd M3 = problem->P_matrix * a_tmp;
+    //Eigen::VectorXd M3 = problem->P_matrix * a_tmp;
     // Penalty term
-    Eigen::MatrixXd penaltyU = Eigen::MatrixXd::Zero(Nphi_w, N_BC);
+    //Eigen::MatrixXd penaltyU = Eigen::MatrixXd::Zero(Nphi_w, N_BC);
 
     // Term for penalty method
     /* if (problem->bcMethod == "penalty")
@@ -102,7 +102,7 @@ int newton_steadyNSWPsi::operator()(const Eigen::VectorXd& x,
 
     for (int i = 0; i < Nphi_w; i++)
     {
-        cc = a_tmp.transpose() * Eigen::SliceFromTensor(problem->C_tensor, 0,
+        cc = b_tmp.transpose() * Eigen::SliceFromTensor(problem->GWPsi_tensor, 0,    //riguardare bene C_tensor
                 i) * a_tmp;
         fvec(i) = - MMW(i) + MA(i) - cc(0, 0);
     } 
@@ -110,7 +110,7 @@ int newton_steadyNSWPsi::operator()(const Eigen::VectorXd& x,
     for (int j = 0; j < Nphi_psi_z; j++)
     {
         int k = j + Nphi_w;
-        fvec(k) = -MMPsi(j) - MB(j);
+        fvec(k) = - MMPsi(j) - MB(j);
     }
 
    /*  if (problem->bcMethod == "lift")
