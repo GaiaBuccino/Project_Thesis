@@ -302,7 +302,7 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
     y.head(Nphi_w) = ITHACAutilities::getCoeffs(problem->Wfield[startSnap],
-        Wmodes);
+                     Wmodes);
     y.tail(Nphi_psi_z) = ITHACAutilities::getCoeffs(problem->Psi_zfield[startSnap],
                      Psi_zmodes);
     int nextStore = 0;

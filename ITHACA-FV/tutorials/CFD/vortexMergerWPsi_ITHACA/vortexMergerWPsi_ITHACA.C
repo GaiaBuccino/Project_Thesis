@@ -113,9 +113,9 @@ int main(int argc, char* argv[])
     example.inletIndex(0, 1) = 0;
     // Time parameters
     example.startTime = 0;
-    example.finalTime = 2;
-    example.timeStep = 0.1;
-    example.writeEvery = 0.1; 
+    example.finalTime = 20;
+    example.timeStep = 0.01;
+    example.writeEvery = 0.5; 
         // Perform The Offline Solve;
     cout << "BEFORE offlinesolve" << endl;
     example.offlineSolve();
@@ -144,10 +144,10 @@ int main(int argc, char* argv[])
     // Set values of the reduced stuff
     reduced.nu = 0.00125;
     reduced.tstart = 0;
-    reduced.finalTime = 2;
-    reduced.dt = 0.1;
-    reduced.storeEvery = 0.1;
-    reduced.exportEvery = 0.1;
+    reduced.finalTime = 20;
+    reduced.dt = 0.01;
+    reduced.storeEvery = 0.01;
+    reduced.exportEvery = 0.5;
     // Set the online velocity
     Eigen::MatrixXd vel_now(1, 1);
     vel_now(0, 0) = 1;
