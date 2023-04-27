@@ -56,11 +56,11 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem)
         Umodes.append((problem->liftfield[k]).clone());
     }*/
 
-    /* for (int k = 0; k < problem->NWmodes; k++)
+    for (int k = 0; k < problem->NWmodes; k++)
     {
         Wmodes.append((problem->Wmodes[k]).clone());
     }
- */
+ 
     /*for (int k = 0; k < problem->NSUPmodes; k++)
     {
         Umodes.append((problem->supmodes[k]).clone());
@@ -71,6 +71,11 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem)
     {
         Psi_zmodes.append((problem->Psi_zmodes[k]).clone());
     }
+
+    /* for (int k = 0; k < problem->NPsimodes; k++)
+    {
+        Psimodes.append((problem->Psimodes[k]).clone());
+    } */
 
     newton_object_sup = newton_unsteadyNSWPsi_sup(Nphi_w + Nphi_psi_z, Nphi_w + Nphi_psi_z,
                         FOMproblem);
@@ -84,6 +89,7 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem)
 int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
                                       Eigen::VectorXd& fvec) const
 {
+    //Info << "In ReducedUnsteadyNSWPsi operator"  << endl;
     Eigen::VectorXd a_dot(Nphi_w);
     Eigen::VectorXd a_tmp(Nphi_w);
     Eigen::VectorXd b_tmp(Nphi_psi_z);
@@ -106,6 +112,7 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
     // MomW Term
     Eigen::VectorXd MA = problem->AWPsi_matrix * a_tmp * nu;
     // MomW Term
+    //Info << "First matrix defined"  << endl;
     Eigen::VectorXd MB = problem->BWPsi_matrix * b_tmp;
     // MassW Term
     Eigen::VectorXd MMW = problem->MW_matrix * a_tmp;
@@ -129,10 +136,13 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
 
     for (int i = 0; i < Nphi_w; i++)
     {
+        //Info << "Entered in equation for W"  << endl;
+
         cc = b_tmp.transpose() * Eigen::SliceFromTensor(problem->GWPsi_tensor, 0,
                 i) * a_tmp;
         fvec(i) = - MMW(i) + MA(i) - cc(0, 0);
 
+        
        /*  if (problem->bcMethod == "penalty")
         {
             for (int l = 0; l < N_BC; l++)
@@ -274,6 +284,7 @@ int newton_unsteadyNS_PPE::df(const Eigen::VectorXd& x,
 void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
                                         int startSnap)
 {
+    //Info << "\n In solve online"  << endl;
     M_Assert(exportEvery >= dt,
              "The time step dt must be smaller than exportEvery.");
     M_Assert(storeEvery >= dt,
@@ -296,15 +307,17 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     }
  */
     // Create and resize the solution vector
-    Info << "\n Nphi_w ="<< Nphi_w << endl;
-    Info << "\n Nphi_psi_z ="<< Nphi_psi_z << endl;
-
+    
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
-    y.head(Nphi_w) = ITHACAutilities::getCoeffs(problem->Wfield[startSnap],
-                     Wmodes);
-    y.tail(Nphi_psi_z) = ITHACAutilities::getCoeffs(problem->Psi_zfield[startSnap],
-                     Psi_zmodes);
+ ///////////////////////////////////////////////////HERE IT BLOCKS 
+    Info << "startSnap = "<< startSnap <<endl;
+    Info << "NWmodes =" << Wmodes << endl;
+    y.head(Nphi_w) = ITHACAutilities::getCoeffs(problem->Wfield[startSnap], Wmodes);
+    Info << "\n GET COEFF w FATTO"<< Nphi_w << endl;
+    Info << "NPSIIIImodes =" << Psi_zmodes << endl;
+    y.tail(Nphi_psi_z) = ITHACAutilities::getCoeffs(problem->Psi_zfield[startSnap], Psi_zmodes);
+    Info << "\n GET COEFF psi FATTO"<< Nphi_psi_z << endl;
     int nextStore = 0;
     int counter2 = 0;
 
@@ -322,8 +335,8 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     newton_object_sup.y_old = y;
     newton_object_sup.yOldOld = newton_object_sup.y_old;
     newton_object_sup.dt = dt;
-    //newton_object_sup.BC.resize(N_BC);
-    //newton_object_sup.tauU = tauU;
+    newton_object_sup.BC.resize(N_BC);
+    newton_object_sup.tauU = tauU;
 
     /* for (int j = 0; j < N_BC; j++)
     {
@@ -347,6 +360,7 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     counter2++;
     nextStore += numberOfStores;
     // Create nonlinear solver object
+    Info << "ok?" << endl;
     Eigen::HybridNonLinearSolver<newton_unsteadyNSWPsi_sup> hnls(newton_object_sup);
     // Set output colors for fancy output
     Color::Modifier red(Color::FG_RED);

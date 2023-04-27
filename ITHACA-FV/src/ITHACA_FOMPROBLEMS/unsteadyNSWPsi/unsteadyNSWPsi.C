@@ -73,7 +73,7 @@ void unsteadyNSWPsi::truthSolve(List<scalar> mu_now, fileName folder)
     cout<< "post createFields"<<endl; //da SPOSTARE IN BASSO FINCHE NON SMETTE DI9 STAMPARE
     Time& runTime = _runTime();
     surfaceScalarField& phi = _phi();
-    cout<< "siamo prima dei campi"<<endl;
+    //cout<< "siamo prima dei campi"<<endl;
     fvMesh& mesh = _mesh();
 #include "initContinuityErrs.H"
     fv::options& fvOptions = _fvOptions();
@@ -86,7 +86,7 @@ void unsteadyNSWPsi::truthSolve(List<scalar> mu_now, fileName folder)
     volVectorField& Psi = _Psi();
     volVectorField& temp = _temp();
     IOMRFZoneList& MRF = _MRF();
-    cout<< "siamo dopo i campi"<<endl;
+    //cout<< "siamo dopo i campi"<<endl;
     singlePhaseTransportModel& laminarTransport = _laminarTransport();
     instantList Times = runTime.times();
     runTime.setEndTime(finalTime);
@@ -180,17 +180,17 @@ void unsteadyNSWPsi::truthSolve(List<scalar> mu_now, fileName folder)
              << "  ClockTime = " << runTime.elapsedClockTime() << " s"
              << nl << endl;
 
-        Info<<"il valore di check runtime e':"<<checkWrite(runTime)<<"\n"<<endl;
+        //Info<<"il valore di check runtime e':"<<checkWrite(runTime)<<"\n"<<endl;
         if (checkWrite(runTime))
         {
-            Info<< "PRE-EXPORT"<<endl;
+            //Info<< "PRE-EXPORT"<<endl;
             ITHACAstream::exportSolution(U, name(counter), folder);
             //ITHACAstream::exportSolution(p, name(counter), folder);
             ITHACAstream::exportSolution(W, name(counter), folder);
             ITHACAstream::exportSolution(Psi_z, name(counter), folder);
             ITHACAstream::exportSolution(Psi, name(counter), folder);
             Ufield.append(U.clone());
-            Info<<"U APPENDED"<<endl;
+            //Info<<"U APPENDED"<<endl;
             //Pfield.append(p.clone());
             Wfield.append(W.clone());
             Psi_zfield.append(Psi_z.clone());

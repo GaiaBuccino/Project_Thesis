@@ -133,7 +133,8 @@ Eigen::VectorXd getCoeffs(GeometricField<Type, PatchField, GeoMesh>&
                           snapshot,
                           PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes, label Nmodes,
                           bool consider_volumes)
-{
+{   Info << "getCoeff 1 " << endl;
+    Info << "Nmodes = "<< Nmodes << endl;
     label Msize;
 
     if (Nmodes == 0)
@@ -143,6 +144,7 @@ Eigen::VectorXd getCoeffs(GeometricField<Type, PatchField, GeoMesh>&
     else
     {
         Msize = Nmodes;
+        Info << "Msize" << Msize << endl;
     }
 
     M_Assert(modes.size() >= Msize,
@@ -195,7 +197,7 @@ Eigen::MatrixXd getCoeffs(PtrList<GeometricField<Type, PatchField, GeoMesh>>&
                           snapshots,
                           PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes, label Nmodes,
                           bool consider_volumes)
-{
+{   Info << "getCoeff 2 " << endl;
     label Msize;
 
     if (Nmodes == 0)

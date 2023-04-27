@@ -66,11 +66,9 @@ class vortexMergerWPsi_ITHACA: public unsteadyNSWPsi
             {
                 for (label i = 0; i < mu.cols(); i++)
                 {
-                    cout<<"else offline"<<endl;
-		    //inl[0] = mu(0, i);
+                   //inl[0] = mu(0, i);
                     mu_now[0] = mu(0, i);
-                    cout<<"else offline22222"<<endl;
-		    //assignBC(U, BCind, inl);
+                    //assignBC(U, BCind, inl);
                     //assignIF(U, inl);
                     //change_viscosity( mu(0, i));
                     truthSolve(mu_now);
@@ -89,12 +87,12 @@ int main(int argc, char* argv[])
     // Read parameters from ITHACAdict file
     ITHACAparameters* para = ITHACAparameters::getInstance(example._mesh(),
                              example._runTime());
-    int NmodesWout = para->ITHACAdict->lookupOrDefault<int>("NmodesWout", 2);
-    int NmodesPsi_zout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zout", 2);
-    int NmodesPsiout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsiout", 2);
-    int NmodesWproj = para->ITHACAdict->lookupOrDefault<int>("NmodesWproj", 2);
-    int NmodesPsi_zproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zproj", 2);
-    int NmodesPsiproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsiproj", 2);
+    int NmodesWout = para->ITHACAdict->lookupOrDefault<int>("NmodesWout", 50);
+    int NmodesPsi_zout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zout", 50);
+    int NmodesPsiout = para->ITHACAdict->lookupOrDefault<int>("NmodesPsiout", 50);
+    int NmodesWproj = para->ITHACAdict->lookupOrDefault<int>("NmodesWproj", 14);
+    int NmodesPsi_zproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsi_zproj", 6);
+    int NmodesPsiproj = para->ITHACAdict->lookupOrDefault<int>("NmodesPsiproj", 6);
     /// Set the number of parameters
     example.Pnumber = 1;
     /// Set samples
@@ -104,7 +102,6 @@ int main(int argc, char* argv[])
     // Set the parameter ranges
     example.mu_range(0, 0) = 0.00125;
     example.mu_range(0, 1) = 0.00125;
-    cout << "preso MU" << endl;
     // Generate equispaced samples inside the parameter range
     example.genEquiPar();
     // Set the inlet boundaries where we have non homogeneous boundary conditions
@@ -114,12 +111,12 @@ int main(int argc, char* argv[])
     // Time parameters
     example.startTime = 0;
     example.finalTime = 20;
-    example.timeStep = 0.01;
-    example.writeEvery = 0.5; 
+    example.timeStep = 0.1;
+    example.writeEvery = 0.1; 
         // Perform The Offline Solve;
-    cout << "BEFORE offlinesolve" << endl;
+    //cout << "BEFORE offlinesolve" << endl;
     example.offlineSolve();
-    cout << "offlinesolve PERFORMED" << endl;
+    //cout << "offlinesolve PERFORMED" << endl;
     // Solve the supremizer problem
     //example.solvesupremizer();
     // Search the lift function
@@ -139,24 +136,24 @@ int main(int argc, char* argv[])
                         example.podex,
                         0, 0, NmodesPsiout);  
     //example.projectSUP("./Matrices", NmodesWproj, NmodesPsi_zproj);
-    example.projectSUP("./Matrices", 2, 2);
+    example.projectSUP("./Matrices", 14, 6);
     reducedUnsteadyNSWPsi reduced(example);
     // Set values of the reduced stuff
     reduced.nu = 0.00125;
     reduced.tstart = 0;
     reduced.finalTime = 20;
-    reduced.dt = 0.01;
-    reduced.storeEvery = 0.01;
-    reduced.exportEvery = 0.5;
+    reduced.dt = 0.1;
+    reduced.storeEvery = 0.1;
+    reduced.exportEvery = 0.1;
     // Set the online velocity
     Eigen::MatrixXd vel_now(1, 1);
     vel_now(0, 0) = 1;
-    reduced.solveOnline_sup(vel_now, 1);
+    reduced.solveOnline_sup(vel_now, 0);
     // Reconstruct the solution and export it
-    reduced.reconstruct(true, "./ITHACAoutput/ReconstructionSUP/");
+    //reduced.reconstruct(true, "./ITHACAoutput/ReconstructionSUP/");
     exit(0);
 }
-
+ 
 
 
 /// \dir 04unsteadyNS Folder of the turorial 4

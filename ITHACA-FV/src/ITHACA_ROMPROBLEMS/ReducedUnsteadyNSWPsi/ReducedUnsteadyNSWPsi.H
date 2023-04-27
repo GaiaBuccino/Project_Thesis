@@ -234,7 +234,7 @@ class reducedUnsteadyNSWPsi: public reducedSteadyNSWPsi
         ///
         /// @return     The rescaled velocity vector
         ///
-        Eigen::MatrixXd setOnlineVelocity(Eigen::MatrixXd vel);
+        //Eigen::MatrixXd setOnlineVelocity(Eigen::MatrixXd vel);
 
 };
 

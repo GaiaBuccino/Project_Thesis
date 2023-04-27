@@ -80,11 +80,11 @@ int newton_steadyNSWPsi::operator()(const Eigen::VectorXd& x,
     // MomW Term
     Eigen::VectorXd MA = problem->AWPsi_matrix * a_tmp * nu;
     // MomW Term
-    Eigen::VectorXd MB = problem->BWPsi_matrix * b_tmp;
+    //Eigen::VectorXd MB = problem->BWPsi_matrix * b_tmp;
     // MassW Term
     Eigen::VectorXd MMW = problem->MW_matrix * a_tmp;
     // MassPsi Term
-    Eigen::VectorXd MMPsi = problem->MPsi_matrix * a_tmp;
+    //Eigen::VectorXd MMPsi = problem->MPsi_matrix * a_tmp;
     // Pressure Term
     //Eigen::VectorXd M3 = problem->P_matrix * a_tmp;
     // Penalty term
@@ -110,7 +110,7 @@ int newton_steadyNSWPsi::operator()(const Eigen::VectorXd& x,
     for (int j = 0; j < Nphi_psi_z; j++)
     {
         int k = j + Nphi_w;
-        fvec(k) = - MMPsi(j) - MB(j);
+        //fvec(k) = - MMPsi(j) - MB(j);
     }
 
    /*  if (problem->bcMethod == "lift")
@@ -141,11 +141,11 @@ int newton_steadyNSWPsi::df(const Eigen::VectorXd& x,
     Info << "This function is still not implemented for the stationary case" <<
          endl;
     exit(0);
-}
+}*/
 
 void reducedSteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel)
 {
-    if (problem->bcMethod == "lift")
+    /* if (problem->bcMethod == "lift")
     {
         vel_now = setOnlineVelocity(vel);
     }
@@ -158,7 +158,8 @@ void reducedSteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel)
         M_Assert(false,
                  "The BC method must be set to lift or penalty in ITHACAdict");
     }
-
+ */
+    Info << "\nIn solve online" << endl;
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
 
@@ -208,7 +209,7 @@ void reducedSteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel)
 
     count_online_solve += 1;
 }
- */
+
 
 // * * * * * * * * * * * * * * * Jacobian Evaluation  * * * * * * * * * * * * * //
 

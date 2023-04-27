@@ -211,12 +211,13 @@ Eigen::MatrixXd steadyNSWPsi::diffusiveW_term(label NWmodes, label NPsi_zmodes)
 
 
     for (label i = 0; i < AWPsi_size; i++)     //L_U_SUPmodes = modes W
-    {   Info << "\nsono in diffusive W ciclo esterno" << endl;
+    {   //Info << "\nsono in diffusive W ciclo esterno" << endl;
         for (label j = 0; j < AWPsi_size; j++)
         {
+            //Info << "\nMatrix A constructed " << NWmodes << endl;
             AWPsi_matrix(i, j) = fvc::domainIntegrate(Wmodes[i] * fvc::laplacian(
                     dimensionedScalar("1", dimless, 1), Wmodes[j])).value();
-            Info << "\nsono in diffusive W ho fatto AWPSI" << endl;
+            //Info << "\nsono in diffusive W ho fatto AWPSI" << endl;
         }
     }
 
@@ -231,34 +232,39 @@ Eigen::MatrixXd steadyNSWPsi::diffusiveW_term(label NWmodes, label NPsi_zmodes)
 /// @return 
 Eigen::MatrixXd steadyNSWPsi::diffusivePsi_z_term(label NWmodes, label NPsi_zmodes)
 {
-    Info << "\nsono in diffusive PSI " << endl;
+    //Info << "\nsono in diffusive PSI " << endl;
     label BWPsi_size = NPsi_zmodes;
     Eigen::MatrixXd BWPsi_matrix;
     BWPsi_matrix.resize(BWPsi_size, BWPsi_size);
 
-     /* for (size_t i = 0; i < Psi_zmodes.size(); i++)
-    {
-        Info<<"\n Psi_zmodes[i] size =" << Psi_zmodes[i].size()<<endl;
+    for (size_t i = 0; i < Psi_zmodes.size(); i++)
+    {   
+        //Info<<"\n Psi_zmodes size =" << Psi_zmodes.size()<<endl;
+        //Info<<"\n Psi_zmodes[i] size =" << Psi_zmodes[i].size()<<endl;
+        //Info<<"\n value of i =" << i <<endl;
 
         for (size_t j = 0; j < Psi_zmodes[i].size(); j++)
         { 
-            Info << "\ncalcolo Psi field vettoriale"<< endl;
+            //Info << "\ncalcolo Psi field vettoriale"<< endl;
+            //Info<<"\n value of j =" << j <<endl;
+
             Psimodes[i][j][2] = Psi_zmodes[i][j];
             //Psimodes[i][2] = Psi_zmodes[i];
-            Info<<"\n valore test di Psi =" << Psimodes[0][0][2]<<endl;
+            //Info<<"\n valore test di Psi =" << Psimodes[0][0][2]<<endl;
 
         }
         
-    } */
+    } 
     
 
     for (label i = 0; i < BWPsi_size; i++)     //L_U_SUPmodes = modes W
-    {   Info << "\nsono in diffusive PSI PRIMO CICLO " << endl;
+    {   //Info << "\nsono in diffusive PSI PRIMO CICLO " << endl;
         for (label j = 0; j < BWPsi_size; j++)
         {
-            Info << "\nsono in diffusive PSI SECONDO CICLO " << endl;
+            //Info << "\nsono in diffusive PSI SECONDO CICLO " << endl;
             BWPsi_matrix(i, j) = fvc::domainIntegrate(Psi_zmodes[i] * fvc::laplacian(
                     dimensionedScalar("1", dimless, 1), Psi_zmodes[j])).value();
+            //Info << "\nB constructed " << endl;
         }
     }
 
@@ -276,7 +282,7 @@ Eigen::Tensor<double, 3> steadyNSWPsi::convective_term_tens(label NWmodes,
     C_tensor.resize(CW_size, CPsi_size, CW_size);
     //const fvMesh& mesh = L_U_SUPmodes[0].mesh();   
 
-    for (size_t i = 0; i < Psi_zmodes.size(); i++)
+    /* for (size_t i = 0; i < Psi_zmodes.size(); i++)
     {
         Info<<"\n Psi_zmodes[i] size =" << Psi_zmodes[i].size()<<endl;
 
@@ -285,22 +291,22 @@ Eigen::Tensor<double, 3> steadyNSWPsi::convective_term_tens(label NWmodes,
             Info << "\ncalcolo Psi field vettoriale"<< endl;
             Psimodes[i][j][2] = Psi_zmodes[i][j];
             //Psimodes[i][2] = Psi_zmodes[i];
-            Info<<"\n valore test di Psi =" << Psimodes[0][0][2]<<endl;
+            //Info<<"\n valore test di Psi =" << Psimodes[0][0][2]<<endl;
 
         }
         
-    }
+    } */
    
     for (label i = 0; i < CW_size; i++)
     {
-        Info << "\n sono nel primo ciclo per GWPsi "<<endl;
+        //Info << "\n sono nel primo ciclo per GWPsi "<<endl;
         for (label j = 0; j < CPsi_size; j++)
         {
             
             //Psimodes[j] = Psi_zmodes[j]*temp[j];   
             for (label k = 0; k < CW_size; k++)
             {
-                Info << "\n sono nel terzo ciclo per GWPsi "<<endl;
+                //Info << "\n sono nel terzo ciclo per GWPsi "<<endl;
                 
                 //if (fluxMethod == "consistent")
                 //{
@@ -310,6 +316,7 @@ Eigen::Tensor<double, 3> steadyNSWPsi::convective_term_tens(label NWmodes,
                                             fvc::flux(curl_Psi),
                                             Wmodes[k])).value();
                 //}
+                //Info << "\nC constructed" << endl;
                 /* else
                 {
                     C_tensor(i, j, k) = fvc::domainIntegrate(L_U_SUPmodes[i] & fvc::div(
@@ -338,6 +345,7 @@ Eigen::MatrixXd steadyNSWPsi::massW_term(label NWmodes, label NPsi_zmodes)
         {
             MW_matrix(i, j) = fvc::domainIntegrate(Wmodes[i] *
                                                   Wmodes[j]).value();
+            //Info << "\nMW constructed " << endl;
         }
     }
 
@@ -360,6 +368,7 @@ Eigen::MatrixXd steadyNSWPsi::massPsi_z_term(label NWmodes, label NPsi_zmodes)
         {
             MPsi_matrix(i, j) = fvc::domainIntegrate(Psi_zmodes[i] * 
                                                    Wmodes[j]).value();
+            //Info << "\nMPsi constructed " << endl;
         }
     }
 

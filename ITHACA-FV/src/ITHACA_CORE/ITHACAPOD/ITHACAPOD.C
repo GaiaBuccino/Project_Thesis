@@ -95,7 +95,7 @@ void getModes(
     PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes,
     word fieldName, bool podex, bool supex, bool sup, label nmodes,
     bool correctBC)
-{
+{   Info << "getModes 1" << endl;
     ITHACAparameters* para(ITHACAparameters::getInstance());
     word PODkey = "POD_" + fieldName;
     word PODnorm = para->ITHACAdict->lookupOrDefault<word>(PODkey, "L2");
@@ -103,6 +103,8 @@ void getModes(
              PODnorm == "Frobenius", "The PODnorm can be only L2 or Frobenius");
     Info << "Performing POD for " << fieldName << " using the " << PODnorm <<
          " norm" << endl;
+
+    Info << "\nvalue of podex = " << podex << endl;
 
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
@@ -134,6 +136,7 @@ void getModes(
 
         if (PODnorm == "L2")
         {
+            Info << "in PODnorm==L2" << endl;
             _corMatrix = ITHACAutilities::getMassMatrix(snapshots);
         }
         else if (PODnorm == "Frobenius")
@@ -186,11 +189,11 @@ void getModes(
 
         Info << "####### End of the POD for " << snapshots[0].name() << " #######" <<
              endl;
-        //Eigen::VectorXd eigenValueseigLam =
-        //    eigenValueseig.real().array().abs().cwiseInverse().sqrt() ;
-        //Eigen::MatrixXd modesEig = (SnapMatrix * eigenVectoreig) *
-        //                           eigenValueseigLam.head(nmodes).asDiagonal();
-        Eigen::MatrixXd modesEig = (SnapMatrix * eigenVectoreig);
+        Eigen::VectorXd eigenValueseigLam =
+            eigenValueseig.real().array().abs().cwiseInverse().sqrt() ;
+        Eigen::MatrixXd modesEig = (SnapMatrix * eigenVectoreig) *
+                                eigenValueseigLam.head(nmodes).asDiagonal();
+        //Eigen::MatrixXd modesEig = (SnapMatrix * eigenVectoreig);
         // Computing Normalization factors of the POD Modes
         Eigen::VectorXd V = ITHACAutilities::getMassMatrixFV(snapshots[0]);
         Eigen::MatrixXd normFact(nmodes, 1);
@@ -299,6 +302,7 @@ void getModes(
 
         if (sup == 1)
         {
+           
             ITHACAstream::read_fields(modes, fieldName + "sup",
                                       "./ITHACAoutput/supremizer/");
         }
@@ -589,8 +593,7 @@ Eigen::MatrixXd corMatrix(PtrList<volScalarField>& snapshots)
 
     return matrix;
 }
-
-
+ 
 /// Construct the Correlation Matrix for Vector Field
 template<>
 Eigen::MatrixXd corMatrix(PtrList<volVectorField>& snapshots)
@@ -1004,7 +1007,9 @@ void getModes(
     PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes,
     PtrList<volScalarField>& Volumes, word fieldName, bool podex, bool supex,
     bool sup, label nmodes, bool correctBC)
-{
+{   
+    Info << "getModes 2" << endl;
+
     ITHACAparameters* para(ITHACAparameters::getInstance());
 
     if (nmodes == 0 && para->eigensolver == "spectra")
@@ -1088,6 +1093,7 @@ void getModes(
 
         Info << "####### End of the POD for " << snapshots[0].name() << " #######" <<
              endl;
+
         Eigen::VectorXd eigenValueseigLam =
             eigenValueseig.real().array().cwiseInverse().sqrt() ;
         Eigen::MatrixXd modesEig = (SnapMatrix * eigenVectoreig) *
@@ -1548,7 +1554,9 @@ void getModes(
     PtrList<Field_type>& snapshots, PtrList<Field_type>& modes,
     PtrList<Field_type_2>& fields2, word fieldName, bool podex, bool supex,
     bool sup, label nmodes, bool correctBC)
-{
+{   
+    Info << "getModes 3" << endl;
+
     ITHACAparameters* para(ITHACAparameters::getInstance());
 
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
@@ -1615,7 +1623,9 @@ void getModes(
                      "The Eigenvalue Decomposition did not succeed");
             eigenVectoreig = esEg.eigenvectors().real().rowwise().reverse().leftCols(
                                  nmodes);
+            Info<< "\nEIGENVECTORS OK"<<endl;
             eigenValueseig = esEg.eigenvalues().real().reverse().head(nmodes);
+            Info<< "\nEIGENValues OK"<<endl;
         }
 
         Info << "####### End of the POD for " << snapshots[0].name() << " #######" <<
