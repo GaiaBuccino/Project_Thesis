@@ -4,6 +4,7 @@
         "unsteadyNS.C": "cpp",
         "unsteadyNSWPsi.C": "cpp",
         "W-PsiEqN.C": "cpp",
-        "steadyNS.C": "cpp"
+        "steadyNS.C": "cpp",
+        "vortexMergerWPsi_ITHACA.C": "cpp"
     }
 }

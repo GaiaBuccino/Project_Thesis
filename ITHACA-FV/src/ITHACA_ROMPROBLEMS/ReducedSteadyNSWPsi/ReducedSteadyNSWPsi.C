@@ -45,7 +45,7 @@ reducedSteadyNSWPsi::reducedSteadyNSWPsi(steadyNSWPsi& FOMproblem)
     :
     problem(&FOMproblem)
 {
-    //N_BC = problem->inletIndex.rows();
+    N_BC = problem->inletIndex.rows();
     Nphi_w = problem->AWPsi_matrix.rows();
     Nphi_psi_z = problem->BWPsi_matrix.cols();
 
@@ -145,7 +145,7 @@ int newton_steadyNSWPsi::df(const Eigen::VectorXd& x,
 
 void reducedSteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel)
 {
-    /* if (problem->bcMethod == "lift")
+    if (problem->bcMethod == "lift")
     {
         vel_now = setOnlineVelocity(vel);
     }
@@ -158,7 +158,7 @@ void reducedSteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel)
         M_Assert(false,
                  "The BC method must be set to lift or penalty in ITHACAdict");
     }
- */
+ 
     Info << "\nIn solve online" << endl;
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
@@ -378,7 +378,7 @@ void reducedSteadyNSWPsi::reconstruct(bool exportFields, fileName folder,
     }
 }
  */
-/* Eigen::MatrixXd reducedSteadyNS::setOnlineVelocity(Eigen::MatrixXd vel)
+Eigen::MatrixXd reducedSteadyNSWPsi::setOnlineVelocity(Eigen::MatrixXd vel)
 {
     assert(problem->inletIndex.rows() == vel.rows()
            && "Imposed boundary conditions dimensions do not match given values matrix dimensions");
@@ -389,6 +389,8 @@ void reducedSteadyNSWPsi::reconstruct(bool exportFields, fileName folder,
     {
         int p = problem->inletIndex(k, 0);
         int l = problem->inletIndex(k, 1);
+        Info << "\narrived at value of p ="<< p <<endl;
+        Info << "\narrived at value of l ="<< l <<endl;
         scalar area = gSum(problem->liftfield[0].mesh().magSf().boundaryField()[p]);
         scalar u_lf = gSum(problem->liftfield[k].mesh().magSf().boundaryField()[p] *
                            problem->liftfield[k].boundaryField()[p]).component(l) / area;
@@ -397,4 +399,4 @@ void reducedSteadyNSWPsi::reconstruct(bool exportFields, fileName folder,
 
     return vel_scal;
 }
- */
+ 

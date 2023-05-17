@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
     example.finalTime = 20;
     example.timeStep = 0.1;
     example.writeEvery = 0.1; 
-        // Perform The Offline Solve;
+    // Perform The Offline Solve;
     //cout << "BEFORE offlinesolve" << endl;
     example.offlineSolve();
     //cout << "offlinesolve PERFORMED" << endl;
@@ -143,14 +143,14 @@ int main(int argc, char* argv[])
     reduced.tstart = 0;
     reduced.finalTime = 20;
     reduced.dt = 0.1;
-    reduced.storeEvery = 0.1;
-    reduced.exportEvery = 0.1;
+    reduced.storeEvery = 10;
+    reduced.exportEvery = 10;
     // Set the online velocity
     Eigen::MatrixXd vel_now(1, 1);
     vel_now(0, 0) = 1;
     reduced.solveOnline_sup(vel_now, 0);
     // Reconstruct the solution and export it
-    //reduced.reconstruct(true, "./ITHACAoutput/ReconstructionSUP/");
+    reduced.reconstruct(true, "./ITHACAoutput/ReconstructionSUP/");
     exit(0);
 }
  

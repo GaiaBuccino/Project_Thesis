@@ -95,7 +95,7 @@ void getModes(
     PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes,
     word fieldName, bool podex, bool supex, bool sup, label nmodes,
     bool correctBC)
-{   Info << "getModes 1" << endl;
+{   //Info << "getModes 1" << endl;
     ITHACAparameters* para(ITHACAparameters::getInstance());
     word PODkey = "POD_" + fieldName;
     word PODnorm = para->ITHACAdict->lookupOrDefault<word>(PODkey, "L2");
@@ -104,7 +104,7 @@ void getModes(
     Info << "Performing POD for " << fieldName << " using the " << PODnorm <<
          " norm" << endl;
 
-    Info << "\nvalue of podex = " << podex << endl;
+    //Info << "\nvalue of podex = " << podex << endl;
 
     if ((podex == 0 && sup == 0) || (supex == 0 && sup == 1))
     {
@@ -1008,7 +1008,7 @@ void getModes(
     PtrList<volScalarField>& Volumes, word fieldName, bool podex, bool supex,
     bool sup, label nmodes, bool correctBC)
 {   
-    Info << "getModes 2" << endl;
+    //Info << "getModes 2" << endl;
 
     ITHACAparameters* para(ITHACAparameters::getInstance());
 
@@ -1555,7 +1555,7 @@ void getModes(
     PtrList<Field_type_2>& fields2, word fieldName, bool podex, bool supex,
     bool sup, label nmodes, bool correctBC)
 {   
-    Info << "getModes 3" << endl;
+    //Info << "getModes 3" << endl;
 
     ITHACAparameters* para(ITHACAparameters::getInstance());
 
@@ -1623,9 +1623,8 @@ void getModes(
                      "The Eigenvalue Decomposition did not succeed");
             eigenVectoreig = esEg.eigenvectors().real().rowwise().reverse().leftCols(
                                  nmodes);
-            Info<< "\nEIGENVECTORS OK"<<endl;
             eigenValueseig = esEg.eigenvalues().real().reverse().head(nmodes);
-            Info<< "\nEIGENValues OK"<<endl;
+
         }
 
         Info << "####### End of the POD for " << snapshots[0].name() << " #######" <<

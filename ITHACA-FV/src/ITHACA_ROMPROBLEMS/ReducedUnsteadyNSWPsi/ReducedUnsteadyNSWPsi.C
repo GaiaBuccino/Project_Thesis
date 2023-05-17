@@ -46,17 +46,17 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem)
     :
     problem(&FOMproblem)
 {
-    N_BC = problem->inletIndex.rows();
+    //N_BC = problem->inletIndex.rows();
     Nphi_w = problem->AWPsi_matrix.rows();
     Nphi_psi_z = problem->BWPsi_matrix.cols();
 
     // Create locally the velocity modes
-    /*for (int k = 0; k < problem->liftfield.size(); k++)
+    /* for (int k = 0; k < problem->liftfield.size(); k++)
     {
         Umodes.append((problem->liftfield[k]).clone());
-    }*/
+    } */
 
-    for (int k = 0; k < problem->NWmodes; k++)
+    for (int k = 0; k < Nphi_w; k++)
     {
         Wmodes.append((problem->Wmodes[k]).clone());
     }
@@ -67,7 +67,7 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem)
     }*/
 
     // Create locally the pressure modes
-    for (int k = 0; k < problem->NPsi_zmodes; k++)
+    for (int k = 0; k < Nphi_psi_z; k++)
     {
         Psi_zmodes.append((problem->Psi_zmodes[k]).clone());
     }
@@ -142,14 +142,13 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
                 i) * a_tmp;
         fvec(i) = - MMW(i) + MA(i) - cc(0, 0);
 
-        
-       /*  if (problem->bcMethod == "penalty")
+        /* if (problem->bcMethod == "penalty")
         {
             for (int l = 0; l < N_BC; l++)
             {
                 fvec(i) += penaltyU(i, l);
             }
-        } */
+        }  */
     }
 
     for (int j = 0; j < Nphi_psi_z; j++)
@@ -165,8 +164,8 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
             fvec(j) = x(j) - BC(j);
         }
     }
- */
-    return 0;
+ 
+    return 0; */
 }
 
 // Operator to evaluate the Jacobian for the supremizer approach
@@ -297,25 +296,24 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
              "The variable exportEvery must be an integer multiple of the variable storeEvery.");
     int numberOfStores = round(storeEvery / dt);
 
-   /*  if (problem->bcMethod == "lift")
-    {
-        vel_now = setOnlineVelocity(vel);
+    /* if (problem->bcMethod == "lift")
+    {Info << "in_BC_lift?" << endl;
+        //vel_now = setOnlineVelocity(vel);
     }
     else if (problem->bcMethod == "penalty")
     {
         vel_now = vel;
-    }
- */
+    }  */
+ 
     // Create and resize the solution vector
     
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
- ///////////////////////////////////////////////////HERE IT BLOCKS 
-    Info << "startSnap = "<< startSnap <<endl;
-    Info << "NWmodes =" << Wmodes << endl;
+    //Info << "startSnap = "<< startSnap <<endl;
+    //Info << "NWmodes =" << Wmodes << endl;
+    //Info << "N_BC =" << N_BC << endl;
     y.head(Nphi_w) = ITHACAutilities::getCoeffs(problem->Wfield[startSnap], Wmodes);
-    Info << "\n GET COEFF w FATTO"<< Nphi_w << endl;
-    Info << "NPSIIIImodes =" << Psi_zmodes << endl;
+    //Info << "\n GET COEFF w FATTO"<< Nphi_w << endl;
     y.tail(Nphi_psi_z) = ITHACAutilities::getCoeffs(problem->Psi_zfield[startSnap], Psi_zmodes);
     Info << "\n GET COEFF psi FATTO"<< Nphi_psi_z << endl;
     int nextStore = 0;
@@ -323,25 +321,27 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
 
     // Change initial condition for the lifting function
     /* if (problem->bcMethod == "lift")
-    {
+    {   Info << "does_it_block_here?"<<endl;
         for (int j = 0; j < N_BC; j++)
-        {
+        {//Info << "does_it_ENTER_here?"<<endl;
+        //////////////////////////////IT BLOCKS HERE
             y(j) = vel_now(j, 0);
         }
-    } */
+    }  */
 
     // Set some properties of the newton object
     newton_object_sup.nu = nu;
     newton_object_sup.y_old = y;
+    
     newton_object_sup.yOldOld = newton_object_sup.y_old;
     newton_object_sup.dt = dt;
-    newton_object_sup.BC.resize(N_BC);
+    //newton_object_sup.BC.resize(N_BC);
     newton_object_sup.tauU = tauU;
 
     /* for (int j = 0; j < N_BC; j++)
     {
         newton_object_sup.BC(j) = vel_now(j, 0);
-    } */
+    }  */
 
     // Set number of online solutions
     int Ntsteps = static_cast<int>((finalTime - tstart) / dt);
@@ -360,7 +360,10 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     counter2++;
     nextStore += numberOfStores;
     // Create nonlinear solver object
-    Info << "ok?" << endl;
+    //Info << "ok?" << endl;
+    Info<< "N_phi_w = " << Nphi_w <<endl;
+    Info<< "N_phi_psi = " << Nphi_psi_z <<endl;
+    //Info << "N_BC =" << N_BC << endl;
     Eigen::HybridNonLinearSolver<newton_unsteadyNSWPsi_sup> hnls(newton_object_sup);
     // Set output colors for fancy output
     Color::Modifier red(Color::FG_RED);
@@ -378,7 +381,7 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
             {
                 newton_object_sup.BC(j) = vel_now(j, counter);
             }
-        } */
+        }  */
 
         Eigen::VectorXd res(y);
         res.setZero();
@@ -397,7 +400,7 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
                     y(j) = vel_now(j, counter);
                 }
             }
-        } */
+        }  */
 
         newton_object_sup.operator()(y, res);
         newton_object_sup.yOldOld = newton_object_sup.y_old;
@@ -899,28 +902,39 @@ void reducedUnsteadyNSWPsi::reconstruct(bool exportFields, fileName folder)
                                    "psi_zRec");
     }
 }
-/*
-Eigen::MatrixXd reducedUnsteadyNS::setOnlineVelocity(Eigen::MatrixXd vel)
+
+Eigen::MatrixXd reducedUnsteadyNSWPsi::setOnlineVelocity(Eigen::MatrixXd vel)
 {
+    Info << "I am in setOnline" << endl;
     assert(problem->inletIndex.rows() == vel.rows()
            && "Imposed boundary conditions dimensions do not match given values matrix dimensions");
     Eigen::MatrixXd vel_scal;
     vel_scal.resize(vel.rows(), vel.cols());
 
-    for (int k = 0; k < problem->inletIndex.rows(); k++)
+    Info << "inletIndex.rows()" << problem->inletIndex.rows() << endl;
+
+    /*for (int k = 0; k < problem->inletIndex.rows(); k++)
     {
+        Info << "I am in setOnline FOR CYCLE" << endl;
         int p = problem->inletIndex(k, 0);
+
+        Info << "p = " << p << endl;
         int l = problem->inletIndex(k, 1);
+        Info << "l = " << l << endl;
         scalar area = gSum(problem->liftfield[0].mesh().magSf().boundaryField()[p]);
+
+        Info << "I am in setOnline FOR CYCLE dopo gSUM!" << endl;
         scalar u_lf = gSum(problem->liftfield[k].mesh().magSf().boundaryField()[p] *
                            problem->liftfield[k].boundaryField()[p]).component(l) / area;
+                           
 
         for (int i = 0; i < vel.cols(); i++)
         {
+            Info << "I am in setOnline FOR CYCLE SECOND" << endl;
             vel_scal(k, i) = vel(k, i) / u_lf;
         }
-    }
+    } */
 
     return vel_scal;
-}*/
+} 
 //************************************************************************* //

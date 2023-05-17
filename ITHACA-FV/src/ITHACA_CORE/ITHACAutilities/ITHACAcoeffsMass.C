@@ -134,7 +134,7 @@ Eigen::VectorXd getCoeffs(GeometricField<Type, PatchField, GeoMesh>&
                           PtrList<GeometricField<Type, PatchField, GeoMesh>>& modes, label Nmodes,
                           bool consider_volumes)
 {   Info << "getCoeff 1 " << endl;
-    Info << "Nmodes = "<< Nmodes << endl;
+    Info << "In core utilities coeffs MASS Nmodes = "<< Nmodes << endl;
     label Msize;
 
     if (Nmodes == 0)

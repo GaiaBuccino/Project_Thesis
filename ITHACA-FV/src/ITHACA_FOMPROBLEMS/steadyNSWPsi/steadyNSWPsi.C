@@ -113,7 +113,7 @@ void steadyNSWPsi::projectSUP(fileName folder, label NW, label NPsi_z)
     NPsi_zmodes = NPsi_z;
     NPsimodes = NPsi_z;
 
-    Info << "\nIN PROJECTSUP NWmodes = "<< NWmodes << endl;
+    //Info << "\nIN PROJECTSUP NWmodes = "<< NWmodes << endl;
 
 
     if (ITHACAutilities::check_folder("./ITHACAoutput/Matrices/"))
