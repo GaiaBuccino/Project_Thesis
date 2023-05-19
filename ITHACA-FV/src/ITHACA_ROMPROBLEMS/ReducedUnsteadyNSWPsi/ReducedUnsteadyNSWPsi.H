@@ -54,8 +54,8 @@ struct newton_unsteadyNSWPsi_sup: public newton_argument<double>
                               unsteadyNSWPsi& problem): newton_argument<double>(Nx, Ny),
             problem(&problem),
             Nphi_w(problem.NWmodes),
-            Nphi_psi_z(problem.NPsi_zmodes)
-            //N_BC(problem.inletIndex.rows())
+            Nphi_psi_z(problem.NPsi_zmodes),
+            N_BC(problem.inletIndex.rows())
         {};
 
         int operator()(const Eigen::VectorXd& x, Eigen::VectorXd& fvec) const;
@@ -64,7 +64,7 @@ struct newton_unsteadyNSWPsi_sup: public newton_argument<double>
         unsteadyNSWPsi* problem;
         int Nphi_w;
         int Nphi_psi_z;
-        //int N_BC;
+        int N_BC;
         scalar nu;
         scalar dt;
         Eigen::VectorXd y_old;

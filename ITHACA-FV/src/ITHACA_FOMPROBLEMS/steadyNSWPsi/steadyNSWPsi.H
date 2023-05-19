@@ -70,7 +70,9 @@ class steadyNSWPsi: public steadyNS
         volScalarModes W_proj_modes;
         volScalarModes Psi_z_proj_modes;
         volVectorModes Psi_proj_modes; */
-
+        
+        /// List of pointers used to form the list of lifting functions
+        PtrList<volVectorField> liftfield;
 
         /// Number of vorticity modes used for the projection
         label NWmodes;
