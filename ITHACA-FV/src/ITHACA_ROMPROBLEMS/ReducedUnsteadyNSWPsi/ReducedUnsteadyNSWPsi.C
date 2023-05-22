@@ -88,7 +88,7 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem):
 int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
     Eigen::VectorXd& fvec) const
 {
-    Info << "In ReducedUnsteadyNSWPsi operator"  << endl;
+    Info << "In ReducedUnsteadyNSWPsi operator" << endl;
     Eigen::VectorXd a_dot(Nphi_w);
     Eigen::VectorXd a_tmp(Nphi_w);
     Eigen::VectorXd b_tmp(Nphi_psi_z);
@@ -100,18 +100,18 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
     {
         a_dot = (x.head(Nphi_w) - y_old.head(Nphi_w)) / dt;
     } else
-    {   //enters here
+    { // enters here
         a_dot = (1.5 * x.head(Nphi_w) - 2 * y_old.head(Nphi_w) + 0.5 * yOldOld.head(Nphi_w)) / dt;
     }
 
     // Convective term
     Eigen::MatrixXd cc(1, 1);
-    //Info << "Try to find no bad alloc 111111"  << endl;
-    // MomW Term
-    Eigen::VectorXd MA = problem->AWPsi_matrix * a_tmp *nu;
-    //Info << "Try to find no bad alloc"  << endl;  //genera bad alloc
-    // MomW Term
-    //Info << "First matrix defined"  << endl;
+    // Info << "Try to find no bad alloc 111111"  << endl;
+    //  MomW Term
+    Eigen::VectorXd MA = problem->AWPsi_matrix * a_tmp * nu;
+    // Info << "Try to find no bad alloc"  << endl;  //genera bad alloc
+    //  MomW Term
+    // Info << "First matrix defined"  << endl;
     Eigen::VectorXd MB = problem->BWPsi_matrix * b_tmp;
     // MassW Term
     Eigen::VectorXd MMW = problem->MW_matrix * a_tmp;
@@ -132,10 +132,10 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
                                          a_tmp);
         }
     } */
-    Info << "HEEEEERE"  << endl;
+    Info << "HEEEEERE" << endl;
     for (int i = 0; i < Nphi_w; i++)
     {
-        Info << "Entered in equation for W"  << endl;
+        Info << "Entered in equation for W" << endl;
 
         cc = b_tmp.transpose() * Eigen::SliceFromTensor(problem->GWPsi_tensor, 0, i) * a_tmp;
         fvec(i) = -MMW(i) + MA(i) - cc(0, 0);
@@ -150,10 +150,11 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
     }
 
     for (int j = 0; j < Nphi_psi_z; j++)
-    {   
-        Info << "Entered in equation for Psi"  << endl;
+    {
+        Info << "Entered in equation for Psi" << endl;
         int k = j + Nphi_w;
         fvec(k) = -MMPsi(j) - MB(j);
+        Info << "Entered in equation for PSIIIIII" << endl;
     }
 
     /* if (problem->bcMethod == "lift")
@@ -162,20 +163,20 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
         {
             fvec(j) = x(j) - BC(j);
         }
-    }
+    }*/
 
-    return 0; */
+    return 0; 
 }
 
 // Operator to evaluate the Jacobian for the supremizer approach
 int newton_unsteadyNSWPsi_sup::df(const Eigen::VectorXd& x,
     Eigen::MatrixXd& fjac) const
 {
-    Info << "Entered in df"  << endl;
+    Info << "Entered in df" << endl;
     Eigen::NumericalDiff<newton_unsteadyNSWPsi_sup> numDiff(*this);
-    Info << "Entered in df1"  << endl;
+    Info << "Entered in df1" << endl;
     numDiff.df(x, fjac);
-    Info << "Entered in df2"  << endl;
+    Info << "Entered in df2" << endl;
     return 0;
 }
 /*/////////////////////////////////////////////////////////DA QUI NO
@@ -323,16 +324,16 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
 
     // Change initial condition for the lifting function
     /* if (problem->bcMethod == "lift")
-    {
-        Info << "does_it_block_here?" << endl;
+    {*/
+        //Info << "does_it_block_here?" << endl;
         Info << "HERE we have N_BC = " << N_BC << endl;
         for (int j = 0; j < N_BC; j++)
         {
             Info << "does_it_ENTER_here?" << endl;
-            y(j) = vel(j, 0); // era vel_now
+            y(j) = 0; //vel(j, 0); // era vel_now
             Info << "y = " << y(j) << endl;  //y is a scalar
         }
-    } */
+    //} 
 
     // Set some properties of the newton object
 
@@ -347,7 +348,7 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
 
     for (int j = 0; j < N_BC; j++)
     {
-        newton_object_sup.BC(j) = vel(j, 0);
+        newton_object_sup.BC(j) = 0; //vel(j, 0);
     }
 
     // Set number of online solutions
@@ -387,30 +388,29 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
         {
             for (int j = 0; j < N_BC; j++)
             {
-                newton_object_sup.BC(j) = vel(j, counter); // vel_now
+                newton_object_sup.BC(j) = 0;    //vel(j, counter); // vel_now
             }
         }
 
         Eigen::VectorXd res(y);
         res.setZero();
-        //Info << "Already entered in operator() ?????" << endl;
+        // Info << "Already entered in operator() ?????" << endl;
         hnls.solve(y);
-        
 
 
-        if (problem->bcMethod == "lift")
-        {
+        //if (problem->bcMethod == "lift")
+        //{
             for (int j = 0; j < N_BC; j++)
             {
-                if (problem->timedepbcMethod == "no")
+                /* if (problem->timedepbcMethod == "no")
                 {
-                    y(j) = vel(j, 0); // originariamente vel_now
+                    y(j) = 0;   //vel(j, 0); // originariamente vel_now
                 } else if (problem->timedepbcMethod == "yes")
-                {
-                    y(j) = vel_now(j, counter);
-                }
+                { */
+                    y(j) = 0;  //vel_now(j, counter);
+                //}
             }
-        }
+        //}
 
         newton_object_sup.operator()(y, res);
         newton_object_sup.yOldOld = newton_object_sup.y_old;
