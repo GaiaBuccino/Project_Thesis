@@ -88,12 +88,14 @@ reducedUnsteadyNSWPsi::reducedUnsteadyNSWPsi(unsteadyNSWPsi& FOMproblem):
 int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
     Eigen::VectorXd& fvec) const
 {
-    Info << "In ReducedUnsteadyNSWPsi operator" << endl;
+    //Info << "In ReducedUnsteadyNSWPsi operator" << endl;
     Eigen::VectorXd a_dot(Nphi_w);
     Eigen::VectorXd a_tmp(Nphi_w);
     Eigen::VectorXd b_tmp(Nphi_psi_z);
     a_tmp = x.head(Nphi_w);
+    //Info << "Nphi_psi_z = " << Nphi_psi_z<<endl;   //6
     b_tmp = x.tail(Nphi_psi_z);
+
 
     // Choose the order of the numerical difference scheme for approximating the time derivative
     if (problem->timeDerivativeSchemeOrder == "first")
@@ -132,10 +134,10 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
                                          a_tmp);
         }
     } */
-    Info << "HEEEEERE" << endl;
+    //Info << "HEEEEERE" << endl;
     for (int i = 0; i < Nphi_w; i++)
     {
-        Info << "Entered in equation for W" << endl;
+        //Info << "Entered in equation for W" << endl;
 
         cc = b_tmp.transpose() * Eigen::SliceFromTensor(problem->GWPsi_tensor, 0, i) * a_tmp;
         fvec(i) = -MMW(i) + MA(i) - cc(0, 0);
@@ -151,10 +153,10 @@ int newton_unsteadyNSWPsi_sup::operator()(const Eigen::VectorXd& x,
 
     for (int j = 0; j < Nphi_psi_z; j++)
     {
-        Info << "Entered in equation for Psi" << endl;
+        //Info << "Entered in equation for Psi" << endl;
         int k = j + Nphi_w;
         fvec(k) = -MMPsi(j) - MB(j);
-        Info << "Entered in equation for PSIIIIII" << endl;
+        //Info << "Entered in equation for PSIIIIII" << endl;
     }
 
     /* if (problem->bcMethod == "lift")
@@ -312,11 +314,13 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
 
     y.resize(Nphi_w + Nphi_psi_z, 1);
     y.setZero();
-    // Info << "startSnap = "<< startSnap <<endl;
+    Info << "startSnap = "<< startSnap <<endl;
     // Info << "NWmodes =" << Wmodes << endl;
     // Info << "N_BC =" << N_BC << endl;
     y.head(Nphi_w) = ITHACAutilities::getCoeffs(problem->Wfield[startSnap], Wmodes);
     // Info << "\n GET COEFF w FATTO"<< Nphi_w << endl;
+
+    Info << "Psi_zmodes" << Psi_zmodes.size() << endl;
     y.tail(Nphi_psi_z) = ITHACAutilities::getCoeffs(problem->Psi_zfield[startSnap], Psi_zmodes);
     Info << "\n GET COEFF psi FATTO" << Nphi_psi_z << endl;
     int nextStore = 0;
@@ -326,13 +330,13 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
     /* if (problem->bcMethod == "lift")
     {*/
         //Info << "does_it_block_here?" << endl;
-        Info << "HERE we have N_BC = " << N_BC << endl;
+        /* Info << "HERE we have N_BC = " << N_BC << endl;
         for (int j = 0; j < N_BC; j++)
         {
             Info << "does_it_ENTER_here?" << endl;
             y(j) = 0; //vel(j, 0); // era vel_now
             Info << "y = " << y(j) << endl;  //y is a scalar
-        }
+        } */
     //} 
 
     // Set some properties of the newton object
@@ -393,6 +397,7 @@ void reducedUnsteadyNSWPsi::solveOnline_sup(Eigen::MatrixXd vel,
         }
 
         Eigen::VectorXd res(y);
+        Info << "res =" << res << endl;
         res.setZero();
         // Info << "Already entered in operator() ?????" << endl;
         hnls.solve(y);

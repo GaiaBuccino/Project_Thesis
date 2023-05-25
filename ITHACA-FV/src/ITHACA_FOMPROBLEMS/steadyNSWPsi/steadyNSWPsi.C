@@ -204,6 +204,7 @@ void steadyNSWPsi::projectSUP(fileName folder, label NW, label NPsi_z)
 Eigen::MatrixXd steadyNSWPsi::diffusiveW_term(label NWmodes, label NPsi_zmodes)
 {
     Info << "\nNWmodes = " << NWmodes << endl;
+    Info << "\nNPsi_zmodes = " << NPsi_zmodes << endl;
     label AWPsi_size = NWmodes;
     Info << "\nsize Wmodes = "<< Wmodes.size() << endl;
     Eigen::MatrixXd AWPsi_matrix;
@@ -214,6 +215,7 @@ Eigen::MatrixXd steadyNSWPsi::diffusiveW_term(label NWmodes, label NPsi_zmodes)
     {   //Info << "\nsono in diffusive W ciclo esterno" << endl;
         for (label j = 0; j < AWPsi_size; j++)
         {
+            //Info << "here1" <<endl;
             //Info << "\nMatrix A constructed " << NWmodes << endl;
             AWPsi_matrix(i, j) = fvc::domainIntegrate(Wmodes[i] * fvc::laplacian(
                     dimensionedScalar("1", dimless, 1), Wmodes[j])).value();

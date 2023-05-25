@@ -140,11 +140,11 @@ Eigen::VectorXd getCoeffs(GeometricField<Type, PatchField, GeoMesh>&
     if (Nmodes == 0)
     {
         Msize =  modes.size();
+        Info << "Msize" << Msize << endl;
     }
     else
-    {
-        Msize = Nmodes;
-        Info << "Msize" << Msize << endl;
+    { 
+        Msize = Nmodes;        
     }
 
     M_Assert(modes.size() >= Msize,

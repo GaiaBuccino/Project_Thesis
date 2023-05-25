@@ -1,0 +1,50 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.2                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      ITHACAdict;
+}
+
+// EigenValue solver, can be eigen or spectra
+EigenSolver eigen;
+
+// Number of modes to output and to use for projection
+NmodesWout 50;
+NmodesWproj 14;
+//out maggiore di proj per scegliere dopo quanti modi ussare per proiettare
+
+Nmodeszetaout 50;
+Nmodeszetaproj 14;
+
+NmodesPsi_zout 50;
+NmodesPsi_zproj 6;
+
+Nmodespsiout 50;
+Nmodespsiproj 6;
+
+//NmodesPsiout 50;
+//NmodesPsiout 6;
+
+Nmodespsivecout 50;
+Nmodespsivecproj 6;
+
+/* NmodesSUPout 50;
+NmodesSUPproj 10; */
+
+// Output format to save market vectors.
+OutPrecision 20;
+OutType fixed;
+
+
+
+    
+    

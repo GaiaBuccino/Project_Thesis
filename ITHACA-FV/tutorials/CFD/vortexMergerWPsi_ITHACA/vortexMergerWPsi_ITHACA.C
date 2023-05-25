@@ -140,11 +140,11 @@ int main(int argc, char* argv[])
     reducedUnsteadyNSWPsi reduced(example);
     // Set values of the reduced stuff
     reduced.nu = 0.00125;
-    reduced.tstart = 0;
+    reduced.tstart = 0.1;
     reduced.finalTime = 20;
     reduced.dt = 0.1;
-    reduced.storeEvery = 10;
-    reduced.exportEvery = 10;
+    reduced.storeEvery = 1;
+    reduced.exportEvery = 1;
     // Set the online velocity
     Eigen::MatrixXd vel_now(1, 1);
     vel_now(0, 0) = 0;
